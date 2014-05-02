@@ -1,7 +1,8 @@
 $(document).ready(function() {
 
   setTimeout(function() { printWopr('greeting'); },1000);
-  setTimeout(function() { printPrompt(); },2000);
+  setTimeout(function() { printWopr('play'); },2000);
+  setTimeout(function() { printPrompt(); },3000);
 
   function printWopr(message) {
     var row = $('.template .wopr-row');
@@ -47,14 +48,6 @@ $(document).ready(function() {
   function handleUserInput(response, responseTo) {
     console.log(responseTo + " " + response)
     switch(responseTo) {
-      case("greeting"):
-        pattern = /hello|joshua|/g;
-        if (pattern.test(response)) {
-          clearPrompter();
-          setTimeout(function() { printWopr('play'); },0);
-          setTimeout(function() { printPrompt(); },1000);
-        }
-        break;
       case("play"):
         pattern = /yes|sure|/g;
         if (pattern.test(response)) {
@@ -87,7 +80,7 @@ $(document).ready(function() {
         }     
         break;
       default: 
-        initializeGame(2);   
+        initializeGame(1);   
         break;
     } 
   }
@@ -105,11 +98,11 @@ $(document).ready(function() {
 
   function initializeGame(players) {
     turn = 1;
-    var players = players || 2;
+    var players = players || 1;
     $('#prompter').removeClass('top-margin');
     clearPrompter();    
-    $('#title').text("tic tac toe - " + players + " player");
-    $('#game-message').text("Player " + playerName() + "'s move");
+    $('#title').text("tic tac toe - " + players + " player game");
+    $('#game-message').text("Player " + playerName(players) + " turn");
     drawGrid();
     $('td').click(function() {
       if (turn % 2 === 0) {
@@ -120,14 +113,19 @@ $(document).ready(function() {
       $(this).text(mark);
       $(this).off('click');
       turn ++;
-      $('#game-message').text("Player " + playerName() + "'s move");      
+      $('#game-message').text("Player " + playerName(players) + " turn");      
       checkGameStatus(mark, players);
     });    
   }   
 
   function playerName() {
-    var player = turn % 2 === 0 ? 2 : 1;
-    return player;
+    var name;
+    if (players == 1) {
+      name = turn % 2 === 0 ? 2 : "Computer";      
+    } else {
+      name = turn % 2 === 0 ? 2 : 1;      
+    }
+    return name;
   }     
 
   function drawGrid() {
@@ -215,7 +213,6 @@ $(document).ready(function() {
     if (bestPossibleMoves.length === 0) {
       bestPossibleMoves = bestPossibleMoves.concat(unplayedCells);
     }      
-    // $('#next-move').text("Next best move: " + bestPossibleMoves[0]);
     return bestPossibleMoves[0];
   }  
 
